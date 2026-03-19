@@ -1,0 +1,44 @@
+Transformer models are a class of neural network architectures widely used in natural language processing (NLP), computer vision, and generative AI systems. They are based on the attention mechanism, which allows models to focus on relevant parts of input data when generating outputs.
+
+Since the introduction of the transformer architecture in the paper Attention Is All You Need by Ashish Vaswani and colleagues at Google, many transformer variants have been developed to improve performance, efficiency, scalability, and task specialization.
+
+Major Transformer Variants
+Encoder-Based Transformers
+
+Encoder-based transformers process input text and generate contextual representations.
+
+Example:
+BERT (Bidirectional Encoder Representations from Transformers) developed by Google.
+
+Key characteristics:
+
+Bidirectional context understanding
+
+Strong performance on classification and question-answering tasks
+
+Pretrained on large corpora and fine-tuned for downstream tasks
+
+Applications:
+
+sentiment analysis
+
+named entity recognition
+
+document classification
+
+Decoder-Based Transformers
+
+Decoder-based transformers generate text sequentially and are commonly used for language generation tasks.
+
+Example:
+GPT (Generative Pre-trained Transformer) developed by OpenAI.
+
+Key characteristics:
+
+Autoregressive text generation
+
+Predicts the next token based on previous tokens
+
+Used for conversational AI and content generation
+
+Applications:
