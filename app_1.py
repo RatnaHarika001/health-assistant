@@ -99,7 +99,7 @@ if prompt := st.chat_input("Ask your question..."):
                     ("system", 
                                 """You are a medical assistant. Use the provided tool information to answer.
                                 If the tool provides useful information, answer clearly.If no useful information is found, say:
-                                "I don’t have enough information from the documents.""""),
+                                "I don’t have enough information from the documents."""),
                     *[(m["role"], m["content"]) for m in st.session_state.messages]
                 ]
             })
