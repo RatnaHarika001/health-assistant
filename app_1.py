@@ -6,7 +6,6 @@ from typing import Annotated, TypedDict, List
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_community.tools import Tool
-from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver   # ✅ NEW (important)
 import streamlit as st
 
@@ -55,18 +54,22 @@ class State(TypedDict):
 
 # ---------------------------
 @st.cache_resource
-def load_agent():
-    llm = ChatOpenAI(model="gpt-4o-mini")
+def load_retriever():
+    docs = PyPDFLoader(file_path="Hypertension_1.pdf").load()
 
-    tool = make_retriever_tool_from_pdf(
-        "Hypertension_1.pdf",
-        "hypertension_guide",
-        "Use for blood pressure questions"
+    chunks = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=200
+    ).split_documents(docs)
+
+    vs = FAISS.from_documents(
+        documents=chunks,
+        embedding=OpenAIEmbeddings()
     )
 
-    return create_react_agent(llm, tools=[tool])
+    return vs.as_retriever(search_kwargs={"k": 5})
 
-agent = load_agent()
+retriever = load_retriever()
 
 st.set_page_config(page_title="Health Assistant", page_icon="🏥")
 
@@ -95,17 +98,18 @@ if prompt := st.chat_input("Ask your question..."):
 
             docs = retriever.get_relevant_documents(prompt)
 
-            if not docs:
-    answer = "I don’t have enough information from the documents."
-else:
-    context = "\n\n".join([doc.page_content for doc in docs])
+            print("Docs found:", len(docs))
 
-    # 🔥 Check if hypertension-related content exists
-    if "hypertension" not in context.lower() and "blood pressure" not in context.lower():
-        answer = "I don’t have enough information from the documents."
-    else:
-        response = llm.invoke(f"""
+            if not docs:
+                answer = "I don’t have enough information from the documents."
+            else:
+                context = "\n\n".join([doc.page_content for doc in docs])
+
+                response = llm.invoke(f"""
 Answer the question ONLY using the context below.
+
+If the answer is not in the context, say:
+"I don’t have enough information from the documents."
 
 Context:
 {context}
@@ -113,11 +117,11 @@ Context:
 Question:
 {prompt}
 """)
-        answer = response.content
+
+                answer = response.content
 
             st.markdown(answer)
 
     st.session_state.messages.append({"role": "assistant", "content": answer})
-
 
 
