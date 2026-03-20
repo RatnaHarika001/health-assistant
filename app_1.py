@@ -31,7 +31,10 @@ def make_retriever_tool_from_pdf(file,name,desc):
     docs = PyPDFLoader(file_path=file).load()
     chunks = RecursiveCharacterTextSplitter(chunk_size=500,chunk_overlap=50).split_documents(documents=docs)
     vs = FAISS.from_documents(documents=chunks,embedding=OpenAIEmbeddings())
-    retriever = vs.as_retriever()
+    retriever = vs.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 5}
+)
 
     def tool_func(query: str) -> str:
         result = retriever.get_relevant_documents(query)
