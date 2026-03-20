@@ -17,6 +17,12 @@ if not os.getenv("OPENAI_API_KEY"):
     st.error("❌ OpenAI API key not found. Please set it in Streamlit secrets.")
     st.stop()
 
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+pdf_path = os.path.join(BASE_DIR, "project_files", "RAGProject", "Hypertension_1.pdf")
+
 
 
 llm = ChatOpenAI(model="gpt-4o-mini")
@@ -27,9 +33,12 @@ def make_retriever_tool_from_pdf(file,name,desc):
     vs = FAISS.from_documents(documents=chunks,embedding=OpenAIEmbeddings())
     retriever = vs.as_retriever()
 
-    def tool_func(query:str)->str:
-        print(f"Using Tool {name}")
-        result = retriever.invoke(query)
+    def tool_func(query: str) -> str:
+        result = retriever.get_relevant_documents(query)
+    
+        print("Query:", query)
+        print("Retrieved docs:", len(result))
+    
         return "\n\n".join(doc.page_content for doc in result)
     
     return Tool(name=name,func=tool_func,description=desc)
@@ -44,7 +53,7 @@ def load_agent():
     llm = ChatOpenAI(model="gpt-4o-mini")
 
     tool = make_retriever_tool_from_pdf(
-        "project_files/RAGProject/Hypertension_1.pdf",
+        pdf_path,
         "hypertension_guide",
         "Use for blood pressure questions"
     )
@@ -94,8 +103,6 @@ if prompt := st.chat_input("Ask your question..."):
 
     # Save assistant response
     st.session_state.messages.append({"role": "assistant", "content": answer})
-
-
 
 
 
