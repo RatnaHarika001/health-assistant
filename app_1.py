@@ -120,7 +120,7 @@ Question:
 
                 answer = response.content
 
-            # ✅ ADD THESE TWO LINES
             st.markdown(answer)
-            st.session_state.messages.append({"role": "assistant", "content": answer})
+
+    st.session_state.messages.append({"role": "assistant", "content": answer})
 
