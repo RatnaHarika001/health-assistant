@@ -44,7 +44,7 @@ def load_agent():
     llm = ChatOpenAI(model="gpt-4o-mini")
 
     tool = make_retriever_tool_from_pdf(
-        "Hypertension_1.pdf",
+        "project_files/RAGProject/Hypertension_1.pdf",
         "hypertension_guide",
         "Use for blood pressure questions"
     )
