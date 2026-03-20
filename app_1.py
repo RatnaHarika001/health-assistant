@@ -29,11 +29,11 @@ llm = ChatOpenAI(model="gpt-4o-mini")
 
 def make_retriever_tool_from_pdf(file,name,desc):
     docs = PyPDFLoader(file_path=file).load()
-    chunks = RecursiveCharacterTextSplitter(chunk_size=500,chunk_overlap=50).split_documents(documents=docs)
+    chunks = RecursiveCharacterTextSplitter(chunk_size=1000,chunk_overlap=200).split_documents(documents=docs)
     vs = FAISS.from_documents(documents=chunks,embedding=OpenAIEmbeddings())
     retriever = vs.as_retriever(
     search_type="similarity",
-    search_kwargs={"k": 5}
+    search_kwargs={"k": 8}
 )
 
     def tool_func(query: str) -> str:
@@ -94,9 +94,9 @@ if prompt := st.chat_input("Ask your question..."):
             response = agent.invoke({
                 "messages": [
                     ("system", 
-                                """You are a medical assistant. Answer questions using the provided documents.
-                                 If relevant information is found, use it to answer clearly. "
-                                 If no relevant information is found, say: 'I don’t have enough information from the documents."""),
+                                """You are a medical assistant.Use the provided documents to answer questions.
+                                    If relevant information is partially available, try to answer as best as possible.
+                                    If nothing is found, say: 'I don’t have enough information from the documents."""),
                     *[(m["role"], m["content"]) for m in st.session_state.messages]
                 ]
             })
