@@ -1,17 +1,23 @@
-from langgraph.graph import StateGraph,START,END
-from langchain_openai import ChatOpenAI,OpenAIEmbeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langgraph.graph.message import add_messages,AnyMessage
-from typing import Annotated,TypedDict,List
+from langchain_core.messages import AnyMessage   # ✅ moved here
+from langgraph.graph import add_messages         # ✅ moved here
+from typing import Annotated, TypedDict, List
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_community.tools import Tool
 from langgraph.prebuilt import create_react_agent
+from langgraph.checkpoint.memory import MemorySaver   # ✅ NEW (important)
 import streamlit as st
 
 import os
 from dotenv import load_dotenv
-os.environ["OPENAI_API_KEY"]="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"
+load_dotenv()
+if not os.getenv("OPENAI_API_KEY"):
+    st.error("❌ OpenAI API key not found. Please set it in Streamlit secrets.")
+    st.stop()
+
+
 
 llm = ChatOpenAI(model="gpt-4o-mini")
 
