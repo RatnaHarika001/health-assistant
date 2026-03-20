@@ -84,31 +84,39 @@ for msg in st.session_state.messages:
 
 
 if prompt := st.chat_input("Ask your question..."):
-    
-    # Add user message
+
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Get response
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            response = agent.invoke({
-                "messages": [
-                    ("system", 
-                                """You are a medical assistant.You MUST ONLY answer using the information from the tool.
-                                    If the tool output is "NO_RELEVANT_INFO" OR does not clearly contain the answer:
-                                    Respond ONLY with: "I don’t have enough information from the documents."
-                                    DO NOT use your own knowledge. DO NOT guess."""),
-                    *[(m["role"], m["content"]) for m in st.session_state.messages]
-                ]
-            })
 
-            answer = response["messages"][-1].content
+            docs = retriever.get_relevant_documents(prompt)
+
+            if not docs:
+                answer = "I don’t have enough information from the documents."
+            else:
+                context = "\n\n".join([doc.page_content for doc in docs])
+
+                response = llm.invoke(f"""
+Answer the question ONLY using the context below.
+
+If the answer is not in the context, say:
+"I don’t have enough information from the documents."
+
+Context:
+{context}
+
+Question:
+{prompt}
+""")
+
+                answer = response.content
+
             st.markdown(answer)
 
-    # Save assistant response
     st.session_state.messages.append({"role": "assistant", "content": answer})
 
 
