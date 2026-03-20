@@ -39,9 +39,8 @@ def make_retriever_tool_from_pdf(file,name,desc):
     def tool_func(query: str) -> str:
         result = retriever.get_relevant_documents(query)
 
-        if not in result:
-        
-        return "No relevant Info"
+        if not result:
+            return "No relevant Info"
     
         print("Query:", query)
         print("Retrieved docs:", len(result))
