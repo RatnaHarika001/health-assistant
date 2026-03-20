@@ -96,15 +96,16 @@ if prompt := st.chat_input("Ask your question..."):
             docs = retriever.get_relevant_documents(prompt)
 
             if not docs:
-                answer = "I don’t have enough information from the documents."
-            else:
-                context = "\n\n".join([doc.page_content for doc in docs])
+    answer = "I don’t have enough information from the documents."
+else:
+    context = "\n\n".join([doc.page_content for doc in docs])
 
-                response = llm.invoke(f"""
+    # 🔥 Check if hypertension-related content exists
+    if "hypertension" not in context.lower() and "blood pressure" not in context.lower():
+        answer = "I don’t have enough information from the documents."
+    else:
+        response = llm.invoke(f"""
 Answer the question ONLY using the context below.
-
-If the answer is not in the context, say:
-"I don’t have enough information from the documents."
 
 Context:
 {context}
@@ -112,8 +113,7 @@ Context:
 Question:
 {prompt}
 """)
-
-                answer = response.content
+        answer = response.content
 
             st.markdown(answer)
 
