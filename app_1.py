@@ -105,16 +105,22 @@ if prompt := st.chat_input("Ask your question..."):
             else:
                 context = "\n\n".join([doc.page_content for doc in docs])
 
-                response = llm.invoke(f"""Answer the question ONLY using the context below.
-                                          If the answer is not in the context, say:"I don’t have enough information from the documents."
+                response = llm.invoke(f"""
+Answer the question ONLY using the context below.
 
-                                          Context: {context}
-                                          Question:{prompt}""")
+If the answer is not in the context, say:
+"I don’t have enough information from the documents."
+
+Context:
+{context}
+
+Question:
+{prompt}
+""")
 
                 answer = response.content
 
+            # ✅ ADD THESE TWO LINES
             st.markdown(answer)
-
-    st.session_state.messages.append({"role": "assistant", "content": answer})
-
+            st.session_state.messages.append({"role": "assistant", "content": answer})
 
