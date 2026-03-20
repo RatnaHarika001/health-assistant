@@ -10,3 +10,4 @@ wikipedia
 langgraph-cli[inmem]
 faiss-cpu
 nltk
+pypdf
