@@ -1,9 +1,9 @@
-langchain
+langchain==0.2.16
 langgraph
 langchain-core
-langchain-community
+langchain-community==0.2.16
 python-dotenv
-langchain-openai
+langchain-openai==0.1.23
 langchain-groq
 arxiv
 wikipedia
@@ -11,3 +11,4 @@ langgraph-cli[inmem]
 faiss-cpu
 nltk
 pypdf
+streamlit==1.32.2
