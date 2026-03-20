@@ -101,7 +101,7 @@ if prompt := st.chat_input("Ask your question..."):
             print("Docs found:", len(docs))
 
             if not docs:
-                answer = "I don’t have enough information from the documents."
+                answer = "I don't have enough information from the documents."
             else:
                 context = "\n\n".join([doc.page_content for doc in docs])
 
@@ -109,7 +109,7 @@ if prompt := st.chat_input("Ask your question..."):
 Answer the question ONLY using the context below.
 
 If the answer is not in the context, say:
-"I don’t have enough information from the documents."
+"I don't have enough information from the documents."
 
 Context:
 {context}
