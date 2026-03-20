@@ -82,8 +82,9 @@ if prompt := st.chat_input("Ask your question..."):
             response = agent.invoke({
                 "messages": [
                     ("system", 
-                                "You are a medical assistant. ONLY answer questions which have answers in the pdf of tools "
-                                "If the answer to the question is not present in pdf of tools, say: 'I can only answer medical-related questions.'"),
+                                """You are a medical assistant. Answer questions using the provided documents.
+                                 If relevant information is found, use it to answer clearly. "
+                                 If no relevant information is found, say: 'I don’t have enough information from the documents."""),
                     *[(m["role"], m["content"]) for m in st.session_state.messages]
                 ]
             })
